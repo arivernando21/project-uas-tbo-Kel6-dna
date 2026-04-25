@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DNA Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="top-card">
+
+
+        <div>
+
+            <div class="top-left">
+
+                <div class="logo-box">
+                    <img src="{{ url_for('static', filename='dna topbar.png') }}" alt="Logo DNA">
+                </div>
+
+                <div class="title-text">
+
+                    <h1>
+                        <span class="dna">DNA</span> Analyzer
+                    </h1>
+
+                    <span class="dot">•</span>
+
+                    <p>Analisis Sekuens DNA secara Cepat, Akurat, dan Informatif</p>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+
+            <!-- MENU -->
+            <ul class="menu">
+
+                <li class="active" onclick="showPage('analisis', this)">
+                    <div class="icon-box">
+                        <img src="{{ url_for('static', filename='analisis (2).png') }}">
+                    </div>
+                    <span>Analisis</span>
+                </li>
+
+                <li onclick="showPage('tentang', this)">
+                    <div class="icon-box">
+                        <img src="{{ url_for('static', filename='iconTentang.png') }}">
+                    </div>
+                    <span>Tentang</span>
+                </li>
+
+                <li onclick="showPage('panduan', this)">
+                    <div class="icon-box">
+                        <img src="{{ url_for('static', filename='iconPanduan.png') }}">
+                    </div>
+                    <span>Panduan</span>
+                </li>
+
+            </ul>
+
+
+            <!-- CARD INFO -->
+            <div class="sidebar-card">
+                <h4>Tentang DNA Analyzer</h4>
+                <p>
+                    Aplikasi ini digunakan untuk menganalisis sekuens DNA,
+                    meliputi deteksi gen, pencarian motif, perbandingan kemiripan,
+                    dan deteksi mutasi.
+                </p>
+            </div>
+
+
+            <!-- CARD ATURAN -->
+            <div class="sidebar-card">
+                <h4>Aturan Input</h4>
+
+                <ul class="rules">
+                    <li>✔ Hanya boleh mengandung huruf A, T, C, G</li>
+                    <li>✔ DNA 2 bersifat opsional</li>
+                    <li>✔ Motif bersifat opsional</li>
+                </ul>
+            </div>
+
+
+            <!-- ILUSTRASI -->
+            <div class="sidebar-image"></div>
+
+
+            <!-- FOOTER -->
+            <div class="sidebar-footer">
+                © 2024 DNA Analyzer<br>
+                All rights reserved.
+            </div>
+
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+            <div class="content-wrapper">
+
+
+                <!-- ANALISIS -->
+                <div id="analisis-page">
+                    <div class="main-card">
+
+                        <div class="input-card">
+
+                            <div class="title-box">
+                                <div class="title-icon">
+                                    <img src="{{ url_for('static', filename='dnaA.png') }}">
+                                </div>
+                                <h2 class="title">Input Sekuens</h2>
+                            </div>
+
+                            <form method="POST">
+
+                                <div class="input-grid">
+
+                                    <div class="input-group">
+                                        <label>Sekuens DNA 1 *</label>
+
+                                        <div class="input-box">
+                                            <div class="icon-box1">
+                                                <img src="{{ url_for('static', filename='dna1.png') }}">
+                                            </div>
+                                            <textarea id="dna1" name="dna1">{{ dna1 }}</textarea>
+                                        </div>
+
+                                        <small id="count1">Panjang: 0 nukleotida</small>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <label>Sekuens DNA 2 (Opsional)</label>
+
+                                        <div class="input-box">
+                                            <div class="icon-box1">
+                                                <img src="{{ url_for('static', filename='dna2.png') }}">
+                                            </div>
+                                            <textarea id="dna2" name="dna2">{{ dna2 }}</textarea>
+                                        </div>
+
+                                        <small id="count2">Panjang: 0 nukleotida</small>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <label>Motif (Opsional)</label>
+                                        <input name="motif" value="{{ motif }}">
+                                        <small>Contoh: CGT, ATG, TAA</small>
+                                    </div>
+
+                                </div>
+
+                                <div class="btn-center">
+                                    <button type="submit" class="btn-main">
+                                        Analisis Sekarang
+                                    </button>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                        <!-- HASIL -->
+                        {% if result.gene %}
+
+                        <div class="section-title">
+
+                            <div class="line"></div>
+
+                            <div class="icon-box">
+                                <img src="{{ url_for('static', filename='analisis.png') }}">
+                            </div>
+
+                            <h2>Hasil Analisis</h2>
+
+                        </div>
+
+                        <div class="result-card">
+
+                            <div class="result-grid">
+
+                                <!-- CARD 1 -->
+                                <div class="analysis-card card-green">
+                                    <div class="card-header">
+                                        <div class="icon-box">
+                                            <img src="{{ url_for('static', filename='iconanalisis1.png') }}">
+                                        </div>
+                                        <h3>Deteksi Gen</h3>
+                                    </div>
+
+                                    {% if result.gene %}
+
+                                    <div class="badge 
+                                    {% if result.gene.status == 'TERDETEKSI' %}
+                                        success
+                                    {% else %}
+                                        danger
+                                    {% endif %}
+                                            ">
+                                        {{ result.gene.status }}
+                                    </div>
+
+                                    <p class="desc">
+                                        {{ result.gene.message }}
+                                    </p>
+
+                                    <p class="highlight">
+                                        Posisi: {{ result.gene.pos }}
+                                    </p>
+
+                                    {% endif %}
+                                </div>
+
+
+                                <!-- CARD 2 -->
+                                <div class="analysis-card card-blue">
+                                    <div class="card-header">
+                                        <div class="icon-box">
+                                            <img src="{{ url_for('static', filename='iconanalisis2.png') }}">
+                                        </div>
+                                        <h3>Analisis Motif</h3>
+                                    </div>
+
+                                    {% if result.get('motif') %}
+
+                                    <p class="desc">
+                                        Motif "{{ result.motif.motif }}" teridentifikasi pada posisi:
+                                    </p>
+
+                                    <div class="motif-box">
+                                        {% for p in result.motif.positions %}
+                                        <span>{{ p }}</span>
+                                        {% endfor %}
+                                    </div>
+
+                                    <p class="small">
+                                        Jumlah kemunculan: {{ result.motif.count }} kali.
+                                    </p>
+
+                                    {% else %}
+
+                                    <p class="desc empty-text">
+                                        Motif belum dimasukkan atau tidak ditemukan.
+                                    </p>
+
+                                    {% endif %}
+                                </div>
+
+
+                                <!-- CARD 3 -->
+                                <div class="analysis-card card-purple">
+
+                                    <div class="card-header">
+                                        <div class="icon-box">
+                                            <img src="{{ url_for('static', filename='iconanalisis3.png') }}">
+                                        </div>
+                                        <h3>Tingkat Kemiripan</h3>
+                                    </div>
+
+                                    {% if result.similarity is defined %}
+                                    <p class="big-number">{{ result.similarity }}%</p>
+
+                                    <span class="badge similarity {{ result.similarity_info.class }}">
+                                        {{ result.similarity_info.label }}
+                                    </span>
+
+                                    <p class="desc">
+                                        {{ result.similarity_info.desc }}
+                                    </p>
+                                    {% else %}
+                                    <p class="desc">Belum ada perbandingan dilakukan.</p>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- CARD 4 -->
+                                <div class="analysis-card card-orange">
+
+                                    <div class="card-header">
+                                        <div class="icon-box">
+                                            <img src="{{ url_for('static', filename='iconanalisis4.png') }}">
+                                        </div>
+                                        <h3>Analisis Mutasi</h3>
+                                    </div>
+
+                                    {% if result.mutation_info is defined %}
+
+                                    <div class="badge mutation {{ result.mutation_info.class }}">
+                                        {{ result.mutation_info.status }}
+                                        {% if result.mutation_info.class == "detected" %} ✓{% endif %}
+                                    </div>
+
+                                    <p class="desc">
+                                        {{ result.mutation_info.desc }}
+                                    </p>
+
+                                    {% if result.mutation_info.count > 0 %}
+                                    <a href="#detail-mutasi" class="link-detail">
+                                        Lihat detail mutasi
+                                    </a>
+                                    {% endif %}
+
+                                    {% else %}
+                                    <p class="desc">Belum ada analisis mutasi.</p>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ROW BAWAH -->
+                            <div class="bottom-grid">
+
+                                <!-- DETAIL MUTASI -->
+                                <div class="detail-card" id="detail-mutasi">
+
+                                    <h3>Detail Mutasi</h3>
+
+
+                                    <div class="table-wrapper">
+
+                                        <table class="custom-table">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Posisi</th>
+                                                    <th>DNA 1</th>
+                                                    <th>DNA 2</th>
+                                                    <th>Perubahan</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                                {% if result.mutation and result.mutation|length > 0 %}
+
+                                                {% for m in result.mutation %}
+                                                <tr>
+                                                    <td>{{ m.pos }}</td>
+
+                                                    <td>
+                                                        <span class="dna-box green">
+                                                            {{ m.d1 }}
+                                                        </span>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="dna-box red">
+                                                            {{ m.d2 }}
+                                                        </span>
+                                                    </td>
+
+                                                    <td class="mutation">
+                                                        {{ m.d1 }} → {{ m.d2 }}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+
+                                                {% else %}
+                                                <tr>
+                                                    <td colspan="4" style="text-align:center; padding:20px;">
+                                                        Tidak ada mutasi terdeteksi
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- KESIMPULAN -->
+                                <div class="summary-card">
+
+                                    <div class="summary-header">
+                                        <div class="icon-box">
+                                            <img src="{{ url_for('static', filename='icon kesimpulan.png') }}">
+                                        </div>
+                                        <h3>Kesimpulan</h3>
+                                    </div>
+
+                                    <div class="summary-content">
+                                        {% if result.conclusion %}
+                                        <p>{{ result.conclusion }}</p>
+                                        {% else %}
+                                        <p>Belum ada hasil analisis.</p>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- CATATAN -->
+                            <div class="info-box">
+                                Catatan: Hasil analisis ini diperoleh berdasarkan algoritma bioinformatika sederhana dan
+                                dapat digunakan sebagai referensi awal.
+                            </div>
+
+
+                        </div>
+
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <!-- TENTANG -->
+                <div id="tentang-page" style="display:none;">
+
+                    <div class="main-card">
+
+
+                        <h1 class="page-title">Tentang</h1>
+                        <p class="page-subtitle">
+                            Kenali lebih dekat aplikasi DNA Analyzer dan tujuan pembuatannya.
+                        </p>
+
+                        <!-- TOP GRID -->
+                        <div class="about-grid">
+
+                            <!-- KIRI -->
+                            <div class="about-card large">
+
+                                <div class="about-content">
+
+                                    <div class="about-image">
+                                        <img src="{{ url_for('static', filename='logo dna tentang.png') }}" alt="DNA">
+                                    </div>
+
+                                    <div>
+                                        <h3>Tentang DNA Analyzer</h3>
+                                        <p>
+                                            DNA Analyzer adalah aplikasi web yang digunakan untuk menganalisis
+                                            sekuens DNA berdasarkan konsep TBO (Teori Bahasa dan Otomata).
+                                        </p>
+                                        <p>
+                                            Aplikasi ini dirancang untuk membantu mendeteksi pola gen,
+                                            mencari motif, menghitung tingkat kemiripan antar sekuens,
+                                            serta mendeteksi mutasi nukleotida yang mungkin terjadi.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- KANAN -->
+                            <div class="about-card">
+
+                                <h3>Tujuan Aplikasi</h3>
+
+                                <ul class="about-list">
+                                    <li>✔ Mendeteksi gen berdasarkan start codon (ATG) dan stop codon.</li>
+                                    <li>✔ Mencari motif DNA tertentu dalam sekuens.</li>
+                                    <li>✔ Menghitung tingkat kemiripan antar sekuens DNA.</li>
+                                    <li>✔ Mendeteksi perbedaan nukleotida (mutasi).</li>
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ANGGOTA -->
+                        <h3 class="section-title-2">Anggota Kelompok</h3>
+
+                        <div class="team-grid">
+
+                            <div class="team-card">
+                                <div class="avatar">
+                                    <img src="{{ url_for('static', filename='foto ari.jpg') }}">
+                                </div>
+                                <div>
+                                    <h4>Ari Vernando <span class="badge blue">Ketua</span></h4>
+                                    <p>NIM: 09021282429101</p>
+                                    <small>Fokus: Algoritma & Backend</small>
+                                </div>
+                            </div>
+
+                            <div class="team-card">
+                                <div class="avatar">
+                                    <img src="{{ url_for('static', filename='foto rama.jpeg') }}">
+                                </div>
+                                <div>
+                                    <h4>Rama Alfira <span class="badge green">Anggota</span></h4>
+                                    <p>NIM: 09021282429105</p>
+                                    <small>Fokus: Frontend & UI/UX</small>
+                                </div>
+                            </div>
+
+                            <div class="team-card">
+                                <div class="avatar">
+                                    <img src="{{ url_for('static', filename='foto karin.jpeg') }}">
+                                </div>
+                                <div>
+                                    <h4>Careena Putri <span class="badge purple">Anggota</span></h4>
+                                    <p>NIM: 09021282429097</p>
+                                    <small>Fokus: Testing & Dokumentasi</small>
+                                </div>
+                            </div>
+
+                            <div class="team-card">
+                                <div class="avatar">
+                                    <img src="{{ url_for('static', filename='foto kekei.jpeg') }}">
+                                </div>
+                                <div>
+                                    <h4>Axkeisha Azura Alwaqar <span class="badge orange">Anggota</span></h4>
+                                    <p>NIM: 09021282429088</p>
+                                    <small>Fokus: Data & Dokumentasi</small>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- INFO BOX -->
+                        <div class="about-info">
+                            Aplikasi ini dikembangkan sebagai implementasi praktis konsep Finite Automata dalam
+                            mendeteksi
+                            pola
+                            pada string biologis (DNA).
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- PANDUAN -->
+                <div id="panduan-page" style="display:none;">
+                    <div class="main-card">
+
+                        <h1 class="page-title">Panduan</h1>
+                        <p class="page-subtitle">
+                            Cara menggunakan aplikasi DNA Analyzer.
+                        </p>
+
+                        <!-- LANGKAH -->
+                        <div class="guide-section">
+
+                            <h3 class="section-title">Langkah Penggunaan</h3>
+
+                            <div class="step-grid">
+
+                                <!-- STEP 1 -->
+                                <div class="step-card">
+                                    <div class="step-number">1</div>
+                                    <div class="step-box">
+                                        <span style="color:#94a3b8; font-size:13px;">ATGCGTACGT...</span>
+                                    </div>
+                                    <h4>Masukkan DNA 1</h4>
+                                    <p>
+                                        Masukkan sekuens DNA pertama pada kolom "Sekuens DNA 1".
+                                        Pastikan hanya mengandung huruf A, T, C, dan G.
+                                    </p>
+                                </div>
+
+                                <!-- STEP 2 -->
+                                <div class="step-card">
+                                    <div class="step-number">2</div>
+                                    <div class="step-box">
+                                        <span style="color:#94a3b8; font-size:13px;">ATGCGTACGT...</span>
+                                    </div>
+                                    <h4>Masukkan DNA 2 (Opsional)</h4>
+                                    <p>
+                                        Masukkan sekuens DNA kedua jika ingin membandingkan kemiripan
+                                        dan mendeteksi mutasi antar sekuens.
+                                    </p>
+                                </div>
+
+                                <!-- STEP 3 -->
+                                <div class="step-card">
+                                    <div class="step-number">3</div>
+                                    <div class="step-box small">
+                                        <span style="font-size:13px;">CGT</span>
+                                    </div>
+                                    <h4>Masukkan Motif (Opsional)</h4>
+                                    <p>
+                                        Masukkan motif DNA yang ingin dicari kemunculannya dalam
+                                        sekuens DNA pertama.
+                                    </p>
+                                </div>
+
+                                <!-- STEP 4 -->
+                                <div class="step-card">
+                                    <div class="step-number">4</div>
+                                    <div class="step-boximage">
+                                        <img src="{{ url_for('static', filename='image analisis.png') }}"
+                                            style="width:100%; height:100%; object-fit:contain;">
+                                    </div>
+                                    <h4>Klik Analisis</h4>
+                                    <p>
+                                        Klik tombol "Analisis Sekarang" untuk memproses data dan
+                                        menampilkan hasil analisis.
+                                    </p>
+                                </div>
+
+                                <!-- STEP 5 -->
+                                <div class="step-card">
+                                    <div class="step-number">5</div>
+                                    <div class="step-boximage">
+                                        <img src="{{ url_for('static', filename='image lihat hasil.png') }}"
+                                            style="width:100%; height:100%; object-fit:contain;">
+                                    </div>
+                                    <h4>Lihat Hasil</h4>
+                                    <p>
+                                        Hasil analisis akan ditampilkan meliputi deteksi gen,
+                                        motif, tingkat kemiripan, mutasi, dan kesimpulan.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <!-- FITUR -->
+                        <div class="guide-section">
+
+                            <h3 class="section-title">Keterangan Fitur</h3>
+
+                            <div class="feature-grid">
+
+                                <div class="feature-card">
+                                    <div class="feature-icon green">
+                                        <img src="{{ url_for('static', filename='iconanalisis1.png') }}">
+                                    </div>
+                                    <h4>Deteksi Gen</h4>
+                                    <p>Mendeteksi keberadaan gen berdasarkan start codon (ATG) dan stop codon.</p>
+                                </div>
+
+                                <div class="feature-card">
+                                    <div class="feature-icon blue">
+                                        <img src="{{ url_for('static', filename='iconanalisis2.png') }}">
+                                    </div>
+                                    <h4>Analisis Motif</h4>
+                                    <p>Mencari semua posisi kemunculan motif dalam DNA.</p>
+                                </div>
+
+                                <div class="feature-card">
+                                    <div class="feature-icon purple">
+                                        <img src="{{ url_for('static', filename='iconanalisis3.png') }}">
+                                    </div>
+                                    <h4>Tingkat Kemiripan</h4>
+                                    <p>Menghitung persentase kemiripan antara dua sekuens DNA.</p>
+                                </div>
+
+                                <div class="feature-card">
+                                    <div class="feature-icon orange">
+                                        <img src="{{ url_for('static', filename='iconanalisis4.png') }}">
+                                    </div>
+                                    <h4>Analisis Mutasi</h4>
+                                    <p>Menampilkan perbedaan nukleotida beserta posisinya.</p>
+                                </div>
+
+                                <div class="feature-card">
+                                    <div class="feature-icon teal">
+                                        <img src="{{ url_for('static', filename='icon kesimpulan.png') }}">
+                                    </div>
+                                    <h4>Kesimpulan</h4>
+                                    <p>Ringkasan interpretasi hasil analisis berdasarkan data.</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- WARNING -->
+                        <div class="guide-warning">
+                            ⚠ Penting: Pastikan sekuens DNA hanya terdiri dari huruf A, T, C, dan G.
+                            Karakter lain akan dianggap tidak valid.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
