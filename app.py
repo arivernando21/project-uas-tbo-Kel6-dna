@@ -7,9 +7,12 @@ from difflib import SequenceMatcher
 app = Flask(__name__)
 
 def clean_dna(dna):
+    #regular language/bahasa formal Σ = {A, T, C, G} hanya menerima input {A, T, C, G} selain itu karakternya dihapus
     return re.sub(r'[^ATCG]', '', dna.upper())
 
+#memvalidas sekuens DNA merupakan gen valid
 def detect_gene(dna):
+    #regex, language operators, finite automata, tunjukkan epsilon NFA
     match = re.fullmatch(r'ATG(?:[ATCG]{3})+(TAA|TAG|TGA)', dna)
 
     if match:
@@ -32,7 +35,7 @@ def detect_gene(dna):
 def find_motif(dna, motif):
     if not motif:
         return None
-
+                #
     positions = [i+1 for i in range(len(dna)-len(motif)+1) 
                  if dna[i:i+len(motif)] == motif]
 
